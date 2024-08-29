@@ -1,10 +1,20 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, UploadFile, HTTPException
+from fastapi.responses import JSONResponse
+import base64
 from .utils import extract_text_from_pdf_base64
-from .models import Resume
 
 router = APIRouter()
 
 
-@router.post("/resume")
-def post_resume(resume: Resume):
-    return extract_text_from_pdf_base64(resume.content)
+@router.post("/read-text-from-pdf")
+async def post_resume(pdf_file: UploadFile):
+    if (
+        not pdf_file.filename.endswith(".pdf")
+        or not pdf_file.content_type == "application/pdf"
+    ):
+        raise HTTPException(400, "Not a pdf file")
+
+    content = await pdf_file.read()
+    content = base64.b64encode(content).decode("utf-8")
+    content = extract_text_from_pdf_base64(content)
+    return JSONResponse(content, 200)
