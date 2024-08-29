@@ -13,17 +13,14 @@ load_dotenv()
 
 # abstract scraper class
 class Scraper:
-    def __init__(
-        self,
-        wait_time: int = 5,
-    ):
+    def __init__(self, wait_time: int = 5, disable_javascript: bool = False):
         """Constructor method
 
         Args:
             wait_time (int): explicit wait time which is passed to created webdrivers
         """
 
-        self.driver = self._get_webdriver()
+        self.driver = self._get_webdriver(disable_javascript=disable_javascript)
         self.wait = WebDriverWait(self.driver, wait_time)
         self.short_wait = WebDriverWait(self.driver, 2)
 
@@ -55,7 +52,7 @@ class Scraper:
         # start driver
         return webdriver.Remote(command_executor=selenium_url, options=options)
 
-    def _send(self, driver, cmd, params={}) -> Dict:
+    def _send(self, cmd, params={}) -> Dict:
         """
         Executes a Chrome-Dev-Tools command in the given driver.
 
@@ -70,38 +67,32 @@ class Scraper:
         # workaround for execute_cdp for remote drivers:
         # https://github.com/SeleniumHQ/selenium/issues/8672#issuecomment-699676869
         resource = (
-            "/session/%s/chromium/send_command_and_get_result" % driver.session_id
+            "/session/%s/chromium/send_command_and_get_result" % self.driver.session_id
         )
-        url = driver.command_executor._url + resource
+        url = self.driver.command_executor._url + resource
         body = json.dumps({"cmd": cmd, "params": params})
-        response = driver.command_executor._request("POST", url, body)
+        response = self.driver.command_executor._request("POST", url, body)
         return response.get("value")
 
     ## UTIL METHODS ##
-    def print_to_pdf(self, url: str, disable_javascript: bool = False) -> bytes:
+    def print_to_pdf(self, url) -> str:
         """
         Converts and returns a page under the given url as a pdf-file.
 
         Args:
             url (str): URL
-            enable_javascript (bool, optional): Defaults to False
-              Defaults to False.
 
         Returns:
-            bytes: current webpage as a pdf-file
+            str: the pdf file as a base64 string
         """
-        driver = self._get_webdriver(disable_javascript=disable_javascript)
-        driver.get(url)
+        self.driver.get(url)
 
         pdf = self._send(
-            driver,
             "Page.printToPDF",
-            {
-                "printBackground": True,
-            },
         )
-        pdf = base64.b64decode(pdf["data"])
-        driver.quit()
+
+        pdf = pdf["data"]
+        self.driver.quit()
         return pdf
 
     def scroll_to_end(self) -> None:

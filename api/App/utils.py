@@ -4,7 +4,6 @@ from io import BytesIO
 from openai import AsyncOpenAI
 import os
 from .scraper import Scraper
-from asyncio import sleep
 
 
 def extract_text_from_pdf_base64(base64_string: str) -> str:
@@ -50,10 +49,12 @@ async def generate_cover_letter(job_listing: str, resume: str) -> str:
     client = AsyncOpenAI()
 
     # retrieve prompts
-    with open(os.path.join("prompts", "extract_job_information"), "r") as file:
-        extract_job_information_prompt = file.readlines()
-    with open(os.path.join("prompts", "generate_cover_letter"), "r") as file:
-        generate_cover_letter = file.readlines()
+    with open(
+        os.path.join("App", "prompts", "extract_job_information.txt"), "r"
+    ) as file:
+        extract_job_information_prompt = file.read()
+    with open(os.path.join("App", "prompts", "generate_cover_letter.txt"), "r") as file:
+        generate_cover_letter_prompt = file.read()
 
     ## process the job listing
     stream = await client.chat.completions.create(
@@ -66,7 +67,6 @@ async def generate_cover_letter(job_listing: str, resume: str) -> str:
     )
     job_listing = ""
     async for chunk in stream:
-        print(chunk.choices[0].delta.content or "", end="")
         job_listing += chunk.choices[0].delta.content or ""
 
     ## generate the cover letter
@@ -76,7 +76,7 @@ async def generate_cover_letter(job_listing: str, resume: str) -> str:
             {"role": "assistant", "content": job_listing},
             {
                 "role": "user",
-                "content": generate_cover_letter,
+                "content": generate_cover_letter_prompt,
             },
             {"role": "user", "content": f"Here is the resume: {resume}"},
         ],
@@ -84,16 +84,13 @@ async def generate_cover_letter(job_listing: str, resume: str) -> str:
     )
     cover_letter = ""
     async for chunk in stream:
-        print(chunk.choices[0].delta.content or "", end="")
         cover_letter += chunk.choices[0].delta.content or ""
 
     return cover_letter
 
 
-async def scrape_job_listing(url):
-    scraper = Scraper()
-
-    scraper.driver.get("https://www.google.com/")
-    sleep(10)
-    scraper.q
-    pass
+def scrape_job_listing(url):
+    scraper = Scraper(disable_javascript=True)
+    pdf = scraper.print_to_pdf(url)
+    text = extract_text_from_pdf_base64(pdf)
+    return text

@@ -19,12 +19,10 @@ services:
   selenium:
     container_name: selenium-service
     hostname: selenium
-    image: selenium/standalone-chrome:4.1.2
-    shm_size: 1gb
+    image: seleniarm/standalone-chromium:latest
     ports:
       - "4444:4444"
-    environment:
-      - SE_NODE_MAX_SESSIONS=10
+    shm_size: 1gb
     networks:
       - app-network
 
