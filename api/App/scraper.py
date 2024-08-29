@@ -1,16 +1,12 @@
-from abc import ABC, abstractmethod
 from dotenv import load_dotenv
 import os
-from typing import Dict, List
+from typing import Dict
 from selenium import webdriver
-from datetime import datetime
 from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver
 import json
 import base64
-from typing import List
 import time
 
 load_dotenv()
@@ -43,7 +39,7 @@ class Scraper:
             WebDriver: Webdriver instance
         """
         # set up selenium Webdriver
-        selenium_url = f"http://{os.environ.get('SELENIUM_HOST')}:{os.environ.get('SELENIUM_PORT')}/wd/hub"
+        selenium_url = os.environ.get("SELENIUM_URL")
         options = webdriver.ChromeOptions()
         options.add_argument("--ignore-ssl-errors=yes")
         options.add_argument("--ignore-certificate-errors")
