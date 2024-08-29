@@ -1,0 +1,5 @@
+Now that you provided me with the relevant information on the job listing I will provide you with a resume.
+Write me a cover letter based on the skills and experiences in the resume that fit the job listing. 
+Keep the cover letter short, concise and focus on what the listing asks for. 
+It is not necessary to name every detail of the resume in the cover letter. You should rather use the parts of the resume that make sense in the context of the job listing. 
+If you deem the job listing to unfitting for the resume, do not output the cover letter but rather the error code 404. Else only output the cover letter and nothing else.
