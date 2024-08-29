@@ -1,0 +1,42 @@
+# See https://pre-commit.com for more information
+# See https://pre-commit.com/hooks.html for more hooks
+# See
+# https://medium.com/staqu-dev-logs/keeping-python-code-clean-with-pre-commit-hooks-black-flake8-and-isort-cac8b01e0ea1
+default_language_version:
+  python: python3
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    # Ruff version.
+    rev: v0.1.6
+    hooks:
+      # Run the linter.
+      - id: ruff
+        types_or: [python, pyi, jupyter]
+        args: [--fix, --config=api/pyproject.toml]
+      # Run the formatter.
+      - id: ruff-format
+        types_or: [python, pyi, jupyter]
+        args: [--config=api/pyproject.toml]
+  - repo: https://github.com/jumanjihouse/pre-commit-hook-yamlfmt
+    rev: 0.1.1
+    hooks:
+      - id: yamlfmt
+        name: yamlfmt
+        exclude: .*/templates/|helm/repo-builder-api/values.yaml|helm
+        args: [--sequence, '4', --offset, '2', --mapping, '2', --width, '120', --implicit_start]
+        # exclude:
+        additional_dependencies: [--index-url=https://pypi.org/simple/]
+  - repo: https://github.com/adrienverge/yamllint
+    rev: v1.29.0
+    hooks:
+      - id: yamllint # Check YAML Files
+        args: [-d, '{extends: relaxed, rules: {line-length: {max: 120}}}']
+        exclude: helm/|.circleci/config.yml
+        additional_dependencies: [--index-url=https://pypi.org/simple/]
+  - repo: https://github.com/RobertCraigie/pyright-python
+    rev: v1.1.361
+    hooks:
+      - id: pyright
+        types_or: [python, pyi]
+        language: system
+        entry: bash -c 'cd api && poetry run pyright --verbose --project=./pyproject.toml'
