@@ -57,20 +57,17 @@ async def generate_cover_letter(job_listing: str, resume: str) -> str:
         generate_cover_letter_prompt = file.read()
 
     ## process the job listing
-    stream = await client.chat.completions.create(
+    response = await client.chat.completions.create(
         model="gpt-4-turbo",
         messages=[
             {"role": "user", "content": extract_job_information_prompt},
             {"role": "user", "content": f"Here is the job listing: {job_listing}"},
         ],
-        stream=True,
     )
-    job_listing = ""
-    async for chunk in stream:
-        job_listing += chunk.choices[0].delta.content or ""
+    job_listing = response.choices[0].message.content
 
     ## generate the cover letter
-    stream = await client.chat.completions.create(
+    response = await client.chat.completions.create(
         model="gpt-4",
         messages=[
             {"role": "assistant", "content": job_listing},
@@ -80,11 +77,8 @@ async def generate_cover_letter(job_listing: str, resume: str) -> str:
             },
             {"role": "user", "content": f"Here is the resume: {resume}"},
         ],
-        stream=True,
     )
-    cover_letter = ""
-    async for chunk in stream:
-        cover_letter += chunk.choices[0].delta.content or ""
+    cover_letter = response.choices[0].message.content
 
     return cover_letter
 
