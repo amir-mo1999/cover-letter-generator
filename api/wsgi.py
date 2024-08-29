@@ -1,4 +1,2 @@
-import fastapi
-
 
 print("hrllo")
