@@ -5,7 +5,6 @@ from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.remote.webdriver import WebDriver
 import json
-import base64
 import time
 
 load_dotenv()
