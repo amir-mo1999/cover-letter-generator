@@ -9,9 +9,15 @@ function App() {
 
   return (
     <>
-      <Typography variant="h2">Hello</Typography>
       <ResumeUpload></ResumeUpload>
-      <Typography>{resume ? resume.content : ""}</Typography>
+      {resume ? (
+        <>
+          <Typography>{resume ? resume.name : ""}</Typography>
+          <Typography>{resume ? resume.uploaded_at : ""}</Typography>
+        </>
+      ) : (
+        <></>
+      )}
     </>
   );
 }

@@ -1,13 +1,13 @@
 import FileUpload from "./FileUpload";
 import { useState, useEffect } from "react";
+import { Resume } from "../types";
+import moment from "moment";
 
 const ResumeUpload: React.FC = () => {
-  const [resume, setResume] = useState<File>();
+  const [file, setFile] = useState<File>();
 
-  const onResumeUpload = () => {
-    if (resume) {
-      console.log("Adding resume to local storage");
-
+  const onFileUpload = () => {
+    if (file) {
       // set file reader object
       const reader = new FileReader();
 
@@ -18,24 +18,29 @@ const ResumeUpload: React.FC = () => {
           // retrieve content
           const content = result.split(",")[1];
 
-          console.log("Base64 Encoded String:", content);
+          // get cur time
+          const now = moment().format("MMMM Do YYYY, HH:mm");
 
-          // save file name and content to local storage
-          localStorage.setItem(
-            "resume",
-            JSON.stringify({ name: resume.name, content: content })
-          );
+          // create resume object
+          const resume: Resume = {
+            name: file.name,
+            content: content,
+            uploaded_at: now,
+          };
+
+          // save resume to local storage
+          localStorage.setItem("resume", JSON.stringify(resume));
         }
       };
 
       // read resume file
-      reader.readAsDataURL(resume);
+      reader.readAsDataURL(file);
     }
   };
 
-  useEffect(onResumeUpload, [resume]);
+  useEffect(onFileUpload, [file]);
 
-  return <FileUpload setFile={setResume}></FileUpload>;
+  return <FileUpload setFile={setFile}></FileUpload>;
 };
 
 export default ResumeUpload;
