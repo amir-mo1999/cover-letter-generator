@@ -1,42 +1,44 @@
-# See https://pre-commit.com for more information
-# See https://pre-commit.com/hooks.html for more hooks
-# See
-# https://medium.com/staqu-dev-logs/keeping-python-code-clean-with-pre-commit-hooks-black-flake8-and-isort-cac8b01e0ea1
-default_language_version:
-  python: python3
 repos:
-  - repo: https://github.com/astral-sh/ruff-pre-commit
-    # Ruff version.
-    rev: v0.1.6
+  - repo: https://github.com/charliermarsh/ruff-pre-commit
+    rev: v0.0.282 # Use the latest stable version of ruff
     hooks:
-      # Run the linter.
       - id: ruff
-        types_or: [python, pyi, jupyter]
-        args: [--fix, --config=api/pyproject.toml]
-      # Run the formatter.
-      - id: ruff-format
-        types_or: [python, pyi, jupyter]
-        args: [--config=api/pyproject.toml]
-  - repo: https://github.com/jumanjihouse/pre-commit-hook-yamlfmt
-    rev: 0.1.1
+        args: [--fix] # Automatically fix formatting issues
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0 # Use the latest stable version of pre-commit-hooks
     hooks:
-      - id: yamlfmt
-        name: yamlfmt
-        exclude: .*/templates/|helm/repo-builder-api/values.yaml|helm
-        args: [--sequence, '4', --offset, '2', --mapping, '2', --width, '120', --implicit_start]
-        # exclude:
-        additional_dependencies: [--index-url=https://pypi.org/simple/]
-  - repo: https://github.com/adrienverge/yamllint
-    rev: v1.29.0
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-json
+      - id: detect-private-key
+
+  - repo: https://github.com/pre-commit/mirrors-black
+    rev: v23.9.1 # Use the latest stable version of black
     hooks:
-      - id: yamllint # Check YAML Files
-        args: [-d, '{extends: relaxed, rules: {line-length: {max: 120}}}']
-        exclude: helm/|.circleci/config.yml
-        additional_dependencies: [--index-url=https://pypi.org/simple/]
-  - repo: https://github.com/RobertCraigie/pyright-python
-    rev: v1.1.361
+      - id: black
+        language_version: python3 # Use Python 3
+
+  - repo: https://github.com/psf/black
+    rev: 23.9.1 # Use the latest stable version of black
     hooks:
-      - id: pyright
-        types_or: [python, pyi]
-        language: system
-        entry: bash -c 'cd api && poetry run pyright --verbose --project=./pyproject.toml'
+      - id: blacken-docs
+
+  - repo: https://github.com/pycqa/flake8
+    rev: 6.1.0 # Use the latest stable version of flake8
+    hooks:
+      - id: flake8
+
+  - repo: https://github.com/asottile/pyupgrade
+    rev: v3.8.0 # Use the latest stable version of pyupgrade
+    hooks:
+      - id: pyupgrade
+        args: ["--py37-plus"] # Upgrade syntax to Python 3.7+
+
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.5.1 # Use the latest stable version of mypy
+    hooks:
+      - id: mypy
+        additional_dependencies: ["types-requests"] # Add any additional type dependencies as needed
+
