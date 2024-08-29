@@ -1,7 +1,7 @@
 from fastapi import APIRouter, UploadFile, HTTPException
 from fastapi.responses import JSONResponse
 import base64
-from .utils import extract_text_from_pdf_base64
+from .utils import extract_text_from_pdf_base64, scrape_job_listing
 
 router = APIRouter()
 
@@ -24,5 +24,5 @@ async def post_resume(pdf_file: UploadFile):
 
 @router.post("/generate-cover-letter")
 async def generate_cover_letter():
-
+    await scrape_job_listing()
     return "hey"

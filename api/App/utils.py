@@ -3,6 +3,8 @@ from PyPDF2 import PdfReader
 from io import BytesIO
 from openai import AsyncOpenAI
 import os
+from .scraper import Scraper
+from asyncio import sleep
 
 
 def extract_text_from_pdf_base64(base64_string: str) -> str:
@@ -89,4 +91,9 @@ async def generate_cover_letter(job_listing: str, resume: str) -> str:
 
 
 async def scrape_job_listing(url):
+    scraper = Scraper()
+
+    scraper.driver.get("https://www.google.com/")
+    sleep(10)
+    scraper.q
     pass

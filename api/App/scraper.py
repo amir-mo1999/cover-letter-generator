@@ -3,7 +3,6 @@ import os
 from typing import Dict
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver
 import json
 import base64
@@ -33,7 +32,7 @@ class Scraper:
         Starts and return a Selenium-Webdriver instance.
 
         Args:
-            enable_javascript (bool, optional): If Javascript should be enabled for the driver. Defaults to False.
+            enable_javascript (bool, optional): Defaults to False
 
         Returns:
             WebDriver: Webdriver instance
@@ -62,7 +61,7 @@ class Scraper:
 
         Args:
             driver (WebDriver): Webdriver instance
-            cmd (str): Auszuführende Chrome-Dev-Tools command
+            cmd (str): Chrome-Dev-Tools command to be executed
             params (dict, optional): additional parameters for command. Defaults to {}.
 
         Returns:
@@ -85,7 +84,7 @@ class Scraper:
 
         Args:
             url (str): URL
-            enable_javascript (bool, optional): If JavaScript should be enabled before converting the page.
+            enable_javascript (bool, optional): Defaults to False
               Defaults to False.
 
         Returns:
@@ -105,28 +104,11 @@ class Scraper:
         driver.quit()
         return pdf
 
-        """
-        Searched for all element with the given XPath and returns for each element its
-        href-attribute of the first a-tag found within the respective element.
-
-        Args:
-            elements_xpath (str): XPath of the element in which the first a-tag is searched for
-
-        Returns:
-            List[str]: href-attributes of the found a-tags
-        """
-        urls = [
-            el.find_element(By.TAG_NAME, "a").get_attribute("href")
-            for el in self.driver.find_elements(By.XPATH, elements_xpath)
-        ]
-
-        return urls
-
     def scroll_to_end(self) -> None:
         """
         Scrolls in to end of the current webpage.
-        This is useful on pages that dynamically load more content as we scroll down the page, to ensure
-        all elements are loaded before scraping.
+        This is useful on pages that dynamically load more content
+        as we scroll down the page, to ensure all elements are loaded before scraping.
         """
         SCROLL_PAUSE_TIME = 2
 
@@ -148,5 +130,9 @@ class Scraper:
                 break
             last_height = new_height
 
+        """Quits the main driver instance."""
+        self.driver.quit()
+
+    def quit(self):
         """Quits the main driver instance."""
         self.driver.quit()
