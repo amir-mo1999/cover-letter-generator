@@ -1,0 +1,33 @@
+services:
+  api:
+    container_name: api
+    hostname: api
+    shm_size: 1gb
+    volumes:
+      - ./api/App:/www/App
+    build:
+      context: api/.
+    env_file:
+      - ./api/.env
+    ports:
+      - "4000:4000"
+    networks:
+      - app-network
+    depends_on:
+      - selenium
+
+  selenium:
+    container_name: selenium-service
+    hostname: selenium
+    image: selenium/standalone-chrome:4.1.2
+    shm_size: 1gb
+    ports:
+      - "4444:4444"
+    environment:
+      - SE_NODE_MAX_SESSIONS=10
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

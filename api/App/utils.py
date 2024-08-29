@@ -86,3 +86,7 @@ async def generate_cover_letter(job_listing: str, resume: str) -> str:
         cover_letter += chunk.choices[0].delta.content or ""
 
     return cover_letter
+
+
+async def scrape_job_listing(url):
+    pass
