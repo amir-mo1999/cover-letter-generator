@@ -184,7 +184,7 @@ const CoverLettersList: React.FC = () => {
             input: {
               startAdornment: (
                 <InputAdornment position="start">
-                  <SearchIcon />
+                  <SearchIcon color="primary" />
                 </InputAdornment>
               ),
             },
@@ -203,11 +203,11 @@ const CoverLettersList: React.FC = () => {
                 width: "full",
                 minWidth: 400,
                 "& .MuiOutlinedInput-root": {
-                  borderRadius: "160px", // Adjust this value for more or less roundness
+                  borderRadius: "160px",
                   backgroundColor: theme.palette.background.paper,
                 },
                 "& .MuiFilledInput-root": {
-                  borderRadius: "160px", // Adjust this value for more or less roundness
+                  borderRadius: "160px",
                 },
               }}
               placeholder="Company"

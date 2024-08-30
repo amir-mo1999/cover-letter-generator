@@ -3,6 +3,7 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
+import CircularProgress from "@mui/material/CircularProgress";
 import { ResumeUpload, CoverLettersList } from "./components";
 import { useResume } from "./hooks";
 import { CoverLetter } from "./types";
@@ -13,6 +14,7 @@ import { pushCoverLetter } from "./utils";
 import theme from "./theme";
 import Snackbar, { SnackbarCloseReason } from "@mui/material/Snackbar";
 import SnackbarContent from "@mui/material/SnackbarContent";
+import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 
 function isValidURL(url: string): boolean {
   try {
@@ -29,6 +31,7 @@ function App() {
   const [disableGenerate, setDisableGenerate] = useState<boolean>();
   const [openSnackbar, setOpenSnackbar] = useState<boolean>(false);
   const [snackbarText, setSnackbarText] = useState<string>("");
+  const [showSpinner, setShowSpinner] = useState<boolean>(false);
 
   const handleCloseSnackBar = (
     _: React.SyntheticEvent | Event,
@@ -55,11 +58,13 @@ function App() {
 
   // generates new cover letter and pushes it to local storage
   const onClickCreate = () => {
-    if (resume !== undefined)
+    if (resume !== undefined) {
+      setShowSpinner(true);
       generateCoverLetter({ url: url, resume: resume.content }).then((res) => {
         if (res === null) {
           setOpenSnackbar(true);
           setSnackbarText("Error Generating Cover Letter");
+          setShowSpinner(false);
         } else {
           // create new cover letter
           const now = moment().format("MMMM Do YYYY, HH:mm");
@@ -75,8 +80,10 @@ function App() {
 
           setOpenSnackbar(true);
           setSnackbarText("Generated Cover Letter");
+          setShowSpinner(false);
         }
       });
+    }
   };
 
   return (
@@ -130,12 +137,17 @@ function App() {
           }}
         ></TextField>
         <Button
-          disabled={disableGenerate}
+          disabled={disableGenerate || showSpinner}
           color="secondary"
           variant="contained"
           onClick={onClickCreate}
         >
+          <AutoAwesomeIcon sx={{ paddingRight: 1 }} />
           Generate Cover Letter
+          <CircularProgress
+            sx={{ display: showSpinner ? "inline" : "none", marginLeft: 1 }}
+            size={30}
+          />
         </Button>
       </Box>
       <Box

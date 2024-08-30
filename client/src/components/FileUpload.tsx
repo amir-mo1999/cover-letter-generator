@@ -1,6 +1,6 @@
 import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import UploadIcon from "@mui/icons-material/Upload";
 import { SetStateAction } from "react";
 import { SxProps } from "@mui/material/styles";
 
@@ -36,7 +36,7 @@ const FileUpload: React.FC<FileUploadProps> = ({ setFile, text, sx }) => {
       role={undefined}
       variant="contained"
       tabIndex={-1}
-      startIcon={<CloudUploadIcon />}
+      startIcon={<UploadIcon />}
       color="secondary"
       sx={sx}
     >
