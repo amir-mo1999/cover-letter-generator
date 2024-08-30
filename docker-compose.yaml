@@ -1,4 +1,11 @@
 services:
+  client:
+    build:
+      context: client/.
+    ports:
+      - "80:80"
+    restart: always
+
   api:
     container_name: api
     hostname: api
