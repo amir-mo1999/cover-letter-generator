@@ -1,0 +1,29 @@
+Given the following text extracted from an online job listing, identify and organize the key information into the specified categories. The output should clearly structure the job listing details to aid in crafting a targeted job application.
+
+Extracted Job Listing Text: {{job_listing}}
+
+Required Output Format:
+
+Job Listing Information:
+
+Job Title: [Extract the title of the job position]
+Company Name: [Extract the name of the hiring company]
+Location: [Extract the location of the job, if mentioned]
+Key Responsibilities:
+
+Provide a summary of the primary responsibilities and duties associated with the position. List these as bullet points, capturing the main tasks that the role requires.
+Required Skills and Qualifications:
+
+List the specific skills, qualifications, or experience that the job listing specifies as requirements. These may include technical skills, soft skills, years of experience, or educational qualifications.
+Preferred Skills (if mentioned):
+
+Identify any preferred skills or qualifications that are not mandatory but are desirable according to the job listing.
+Company Information:
+
+Extract any available information about the company’s values, mission, or culture. This could include descriptions of the company environment, its goals, or any statements about what the company is looking for in its employees.
+Application Instructions:
+
+Additional Notes:
+
+Ensure that the output is clearly formatted under each heading and that all relevant information from the extracted text is included in the appropriate sections. If any information is missing or unclear in the text, note it as 'Not Provided.'"
+

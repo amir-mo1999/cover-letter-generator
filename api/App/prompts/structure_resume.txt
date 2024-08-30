@@ -1,0 +1,29 @@
+Given the following text extracted from an applicant's resume, identify and organize the key information into the specified categories. The output should clearly structure the applicant's details, making it easy to use for generating a cover letter or other application materials.
+
+Extracted Resume Text: {{resume}}
+
+Required Output Format:
+
+Applicant's Information:
+
+Name: [Extract the applicant's full name]
+Contact Information: [Extract phone number and email address]
+Key Skills:
+
+List up to 5 key skills mentioned in the resume that are relevant to job applications. These should be skills highlighted in sections like 'Skills,' 'Professional Skills,' or within the job descriptions.
+Relevant Experience:
+
+Provide a summary of the most relevant job experiences. For each experience, include:
+Job Title: [Title of the position held]
+Company Name: [Name of the employer]
+Employment Dates: [Start and end dates or duration of employment]
+Key Responsibilities and Achievements: [Brief bullet points describing main tasks and notable achievements]
+Key Achievements:
+
+List any notable achievements or accomplishments that demonstrate the applicant's ability and success in their field. These could be awards, recognitions, or specific metrics (e.g., increased sales by 30%, managed a team of 10, etc.).
+Education:
+
+Provide details on the applicant's highest degree and any relevant certifications or training. For each educational entry, include:
+Degree: [Name of the degree or certification]
+Institution Name: [Name of the institution]
+Graduation Date: [Graduation year or dates attended]
