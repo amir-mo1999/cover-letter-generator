@@ -11,7 +11,15 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import ExpandIcon from "@mui/icons-material/Expand";
 
 const CoverLettersList: React.FC = () => {
-  const [coverLetters] = useCoverLetters();
+  const [coverLetters, setCoverLetters] = useCoverLetters();
+
+  const onDelete = (indx: number) => {
+    const f = (_: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+      const aux = coverLetters.filter((_, i) => i !== indx);
+      setCoverLetters([...aux]);
+    };
+    return f;
+  };
 
   return (
     <Box
@@ -66,7 +74,7 @@ const CoverLettersList: React.FC = () => {
             <Button variant="contained">
               <ContentCopyIcon />
             </Button>
-            <Button variant="contained">
+            <Button onClick={onDelete(indx)} variant="contained">
               <DeleteIcon />
             </Button>
           </Box>
