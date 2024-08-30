@@ -2,8 +2,13 @@ import FileUpload from "./FileUpload";
 import { useState, useEffect } from "react";
 import { Resume } from "../types";
 import moment from "moment";
+import { SxProps } from "@mui/material";
 
-const ResumeUpload: React.FC = () => {
+interface ResumeUploadProps {
+  sx?: SxProps;
+}
+
+const ResumeUpload: React.FC<ResumeUploadProps> = ({ sx }) => {
   const [file, setFile] = useState<File>();
 
   const onFileUpload = () => {
@@ -40,7 +45,9 @@ const ResumeUpload: React.FC = () => {
 
   useEffect(onFileUpload, [file]);
 
-  return <FileUpload setFile={setFile}></FileUpload>;
+  return (
+    <FileUpload sx={sx} text="Upload Resume" setFile={setFile}></FileUpload>
+  );
 };
 
 export default ResumeUpload;

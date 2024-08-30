@@ -2,6 +2,7 @@ import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { SetStateAction } from "react";
+import { SxProps } from "@mui/material/styles";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -17,13 +18,13 @@ const VisuallyHiddenInput = styled("input")({
 
 interface FileUploadProps {
   setFile: React.Dispatch<SetStateAction<File | undefined>>;
+  text?: string;
+  sx?: SxProps;
 }
 
-const FileUpload: React.FC<FileUploadProps> = ({ setFile }) => {
+const FileUpload: React.FC<FileUploadProps> = ({ setFile, text, sx }) => {
   const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
-      console.log("Uploading resume");
-
       const file = e.target.files[0];
       setFile(file);
     }
@@ -36,8 +37,10 @@ const FileUpload: React.FC<FileUploadProps> = ({ setFile }) => {
       variant="contained"
       tabIndex={-1}
       startIcon={<CloudUploadIcon />}
+      color="secondary"
+      sx={sx}
     >
-      Upload files
+      {text}
       <VisuallyHiddenInput
         type="file"
         accept="application/pdf"
