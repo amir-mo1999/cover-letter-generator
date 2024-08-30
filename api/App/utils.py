@@ -5,6 +5,8 @@ from openai import AsyncOpenAI
 import os
 from .scraper import Scraper
 from .models import CoverLetter
+from jinja2 import Environment, FileSystemLoader
+import re
 
 
 def extract_text_from_pdf_base64(base64_string: str) -> str:
@@ -49,28 +51,80 @@ async def generate_cover_letter(job_listing: str, resume: str) -> CoverLetter:
     # open ai async client
     client = AsyncOpenAI()
 
-    # retrieve prompts
-    with open(
-        os.path.join("App", "prompts", "extract_job_information.txt"), "r"
-    ) as file:
-        extract_job_information_prompt = file.read()
-    with open(os.path.join("App", "prompts", "generate_cover_letter.txt"), "r") as file:
-        generate_cover_letter_prompt = file.read()
+    environment = Environment(loader=FileSystemLoader(os.path.join("App", "prompts")))
+    # job listing prompt
+    structure_job_listing_template = environment.get_template(
+        "structure_job_listing.txt"
+    )
+    structure_job_listing_prompt = structure_job_listing_template.render(
+        job_listing=job_listing
+    )
+
+    # resume prompt
+    structure_resume_template = environment.get_template("structure_resume.txt")
+    structure_resume_prompt = structure_resume_template.render(resume=resume)
 
     ## process the job listing
     response = await client.chat.completions.create(
         model="gpt-4-turbo",
         messages=[
-            {"role": "user", "content": extract_job_information_prompt},
-            {"role": "user", "content": f"Here is the job listing: {job_listing}"},
+            {"role": "user", "content": structure_job_listing_prompt},
         ],
     )
     job_listing = response.choices[0].message.content
 
-    # extract company name, job title and pure job listing
-    job_listing = job_listing.split("\n")
-    company, job_title = job_listing[:2]
-    job_listing = "\n".join(job_listing[2:])
+    # get first lines of listing
+    first_lines = job_listing.split("\n")[:6]
+    first_lines = "".join(first_lines)
+
+    # get job title
+    response = await client.chat.completions.create(
+        model="gpt-4-turbo",
+        messages=[
+            {
+                "role": "user",
+                "content": f"Extract the job title from this string: {first_lines}",
+            },
+            {
+                "role": "user",
+                "content": "Only output the job title and nothing else",
+            },
+        ],
+    )
+    job_title = response.choices[0].message.content.strip()
+
+    # get company name
+    response = await client.chat.completions.create(
+        model="gpt-4-turbo",
+        messages=[
+            {
+                "role": "user",
+                "content": f"Extract the company name without its legal form from this string: {first_lines}",
+            },
+            {
+                "role": "user",
+                "content": "Only output the company name and nothing else",
+            },
+        ],
+    )
+    company = response.choices[0].message.content.strip()
+
+    ## process the resume
+    response = await client.chat.completions.create(
+        model="gpt-4-turbo",
+        messages=[
+            {"role": "user", "content": structure_resume_prompt},
+        ],
+    )
+    resume = response.choices[0].message.content
+
+    # cover letter prompt
+    generate_cover_letter_template = environment.get_or_select_template(
+        "generate_cover_letter.txt"
+    )
+    generate_cover_letter_prompt = generate_cover_letter_template.render(
+        resume=resume, job_listing=job_listing
+    )
 
     ## generate the cover letter
     response = await client.chat.completions.create(
@@ -81,7 +135,6 @@ async def generate_cover_letter(job_listing: str, resume: str) -> CoverLetter:
                 "role": "user",
                 "content": generate_cover_letter_prompt,
             },
-            {"role": "user", "content": f"Here is the resume: {resume}"},
         ],
     )
     cover_letter = response.choices[0].message.content

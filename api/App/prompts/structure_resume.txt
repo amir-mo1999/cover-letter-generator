@@ -2,7 +2,12 @@ Given the following text extracted from an applicant's resume, identify and orga
 
 Extracted Resume Text: {{resume}}
 
+In the first line place the job title and in the second the company name without its legal form.
+
 Required Output Format:
+
+[Job Title]
+[Company name without its legal form]
 
 Applicant's Information:
 

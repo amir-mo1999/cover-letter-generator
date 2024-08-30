@@ -1,5 +1,21 @@
-Now that you provided me with the relevant information on the job listing I will provide you with a resume.
-Write me a cover letter based on the skills and experiences in the resume that fit the job listing.
-Keep the cover letter short, concise and focus on what the listing asks for.
-It is not necessary to name every detail of the resume in the cover letter. You should rather use the parts of the resume that make sense in the context of the job listing.
-If you deem the job listing to unfitting for the resume, do not output the cover letter but rather the error code 404. Else only output the cover letter and nothing else.
+Write a cover letter for a job application. The cover letter should be tailored to the specific job listing and highlight the applicant's relevant skills, experiences, and accomplishments that match the job requirements. Use the information provided below to customize the content:
+
+Applicant's Information:
+
+{{resume}}
+
+Job Listing Information:
+
+{{job_listing}}
+
+Introduction: Start with a brief introduction that states the applicant's interest in the position and how they found the job listing. Mention the company name and the specific role they are applying for.
+
+Body Paragraph 1: Highlight the applicant's most relevant experiences and skills that directly align with the job responsibilities and required qualifications. Provide specific examples from the applicant's past roles that demonstrate their capability and success in similar tasks.
+
+Body Paragraph 2: Discuss additional skills or experiences that set the applicant apart from other candidates. This could include leadership roles, unique achievements, or any relevant certifications or training.
+
+Body Paragraph 3: Express understanding and alignment with the company's values, mission, or culture, and explain why the applicant is excited about the opportunity to work at this company.
+
+Conclusion: Conclude with a call to action, expressing the applicant's enthusiasm for the role and desire for an interview. Include a polite closing statement thanking the hiring manager for their time and consideration.
+
+Ensure the tone is professional, confident, and enthusiastic. The cover letter should not exceed one page.

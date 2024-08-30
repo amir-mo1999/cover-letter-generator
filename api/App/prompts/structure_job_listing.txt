@@ -7,8 +7,8 @@ Required Output Format:
 Job Listing Information:
 
 Job Title: [Extract the title of the job position]
-Company Name: [Extract the name of the hiring company]
-Location: [Extract the location of the job, if mentioned]
+Company Name: [Extract the name of the hiring company without the legal form]
+
 Key Responsibilities:
 
 Provide a summary of the primary responsibilities and duties associated with the position. List these as bullet points, capturing the main tasks that the role requires.
