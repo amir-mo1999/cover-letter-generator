@@ -2,26 +2,71 @@ import Typography from "@mui/material/Typography";
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import Link from "@mui/material/Link";
+import Autocomplete from "@mui/material/Autocomplete";
 import Snackbar, { SnackbarCloseReason } from "@mui/material/Snackbar";
 import SnackbarContent from "@mui/material/SnackbarContent";
 import { CoverLetter } from "../types";
 import { useCoverLetters } from "../hooks";
-import React from "react";
 import Divider from "@mui/material/Divider";
 import Button from "@mui/material/Button";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ExpandIcon from "@mui/icons-material/Expand";
 import { pushCoverLetter, removeCoverLetter } from "../utils";
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { TextField } from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search";
+import InputAdornment from "@mui/material/InputAdornment";
 
 const CoverLettersList: React.FC = () => {
-  const [coverLetters] = useCoverLetters();
+  const [coverLetters, setCoverLetters] = useCoverLetters();
   const [toExpandIndx, setToExpandIndx] = useState<number>();
   const [copySnackbarOpen, setCopySnackbarOpen] = useState<boolean>(false);
   const [deleteSnackbarOpen, setDeleteSnackbarOpen] = useState<boolean>(false);
   const [copySnackbarText, setCopySnackbarText] = useState<string>("");
   const [deletedCoverLetter, setDeletedCoverLetter] = useState<CoverLetter>();
+  const [selectedJobTitle, setSelectedJobTitle] = useState<string>("");
+  const [selectedCompanies, setSelectedCompanies] = useState<string[]>([]);
+  const [hiddenIndices, setHiddenIndices] = useState<number[]>([]);
+  const [companies, setCompanies] = useState<Array<string>>([]);
+
+  const updateHiddenIndices = () => {
+    const excludedIndices: number[] = [];
+
+    coverLetters.forEach((coverLetter, index) => {
+      let isCompanySelected: boolean = true;
+      if (selectedCompanies.length > 0)
+        isCompanySelected = selectedCompanies.includes(coverLetter.company);
+
+      const isJobTitleMatching = coverLetter.job_title
+        .toLowerCase()
+        .includes(selectedJobTitle.toLowerCase());
+
+      if (!isCompanySelected || !isJobTitleMatching) {
+        excludedIndices.push(index);
+      }
+    });
+    setHiddenIndices(excludedIndices);
+  };
+
+  useEffect(updateHiddenIndices, [
+    selectedCompanies,
+    selectedJobTitle,
+    coverLetters,
+  ]);
+
+  const updateCompanies = () => {
+    const aux = coverLetters.map((coverLetter) => coverLetter.company);
+    setCompanies(Array.from(new Set(aux)));
+  };
+  useEffect(updateCompanies, [coverLetters]);
+  //useEffect(updateCompanies, []);
+
+  const onChangeSearchJobTitle = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setSelectedJobTitle(e.target.value);
+  };
 
   const onDelete = (indx: number) => {
     const f = () => {
@@ -109,11 +154,60 @@ const CoverLettersList: React.FC = () => {
         height: "100%",
       }}
     >
+      <Box
+        padding="10px"
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "centers",
+          gap: 2,
+        }}
+      >
+        <TextField
+          value={selectedJobTitle}
+          onChange={onChangeSearchJobTitle}
+          placeholder="Job Title"
+          sx={{
+            width: 500,
+            "& .MuiOutlinedInput-root": {
+              borderRadius: "160px", // Adjust this value for more or less roundness
+            },
+          }}
+          slotProps={{
+            input: {
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon />
+                </InputAdornment>
+              ),
+            },
+          }}
+        ></TextField>
+        <Autocomplete
+          multiple
+          options={companies}
+          disablePortal
+          sx={{ width: 300 }}
+          renderInput={(params) => (
+            <TextField
+              sx={{
+                width: 300,
+                "& .MuiOutlinedInput-root": {
+                  borderRadius: "160px",
+                },
+              }}
+              {...params}
+              placeholder="Company"
+            />
+          )}
+        />
+      </Box>
       {coverLetters.map((coverLetter, indx) => (
         <Paper
           key={indx}
           elevation={8}
           sx={{
+            display: hiddenIndices.includes(indx) ? "none" : undefined,
             padding: "10px",
             margin: "10px",
             overflow: "clip",
