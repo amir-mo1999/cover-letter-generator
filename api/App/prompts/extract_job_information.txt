@@ -3,5 +3,5 @@ Extract the information from the listing that would be relevant for writing a co
 Namely information about the company, the scope and tasks of the job offer, and the qualifications that are asked for.
 Ignore additional general information, such as working hours, conditions, location, and salary.
 Only output the extracted information. Keep it in a format that is easy to process for Large Language Models such as yourself.
-In the first line of your response put the name of the company and in the second the job title.
+In the first line of your response put the name of the company in its short form and in the second the job title.
 Do not add any text at the end or at the beginning of the extracted information.
