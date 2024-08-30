@@ -1,3 +1,5 @@
 import FileUpload from "./FileUpload";
 import ResumeUpload from "./ResumeUpload";
-export { FileUpload, ResumeUpload };
+import CoverLettersList from "./CoverLettersList";
+
+export { FileUpload, ResumeUpload, CoverLettersList };

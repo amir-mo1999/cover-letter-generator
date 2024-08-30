@@ -35,6 +35,9 @@ const ResumeUpload: React.FC<ResumeUploadProps> = ({ sx }) => {
 
           // save resume to local storage
           localStorage.setItem("resume", JSON.stringify(resume));
+
+          // dispatch a storage event so that hooks reload
+          window.dispatchEvent(new Event("storage"));
         }
       };
 

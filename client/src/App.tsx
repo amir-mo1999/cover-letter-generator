@@ -3,11 +3,14 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
-import { ResumeUpload } from "./components";
+import { ResumeUpload, CoverLettersList } from "./components";
 import { useResume } from "./hooks";
+import { CoverLetter } from "./types";
 import theme from "./theme";
 import { useState, useEffect } from "react";
 import { generateCoverLetter } from "./api";
+import moment from "moment";
+import { useCoverLetters } from "./hooks";
 
 function isValidURL(url: string): boolean {
   try {
@@ -22,13 +25,14 @@ function App() {
   const resume = useResume();
   const [url, setUrl] = useState<string>("");
   const [disableGenerate, setDisableGenerate] = useState<boolean>();
+  const [coverLetters, setCoverLetters] = useCoverLetters();
 
+  // disable generate button if resume or url is not set
   const checkDisableGenerate = () => {
     if (resume === undefined || !isValidURL(url)) {
       setDisableGenerate(true);
     } else setDisableGenerate(false);
   };
-
   useEffect(checkDisableGenerate, [resume, url]);
 
   const onUrlChange = (
@@ -37,9 +41,35 @@ function App() {
     setUrl(e.target.value);
   };
 
+  // generates new cover letter and pushes it to local storage
   const onClickCreate = () => {
     if (resume !== undefined)
-      generateCoverLetter({ url: url, resume: resume.content });
+      generateCoverLetter({ url: url, resume: resume.content }).then(
+        (value) => {
+          if (value === "error") console.log("There was an error");
+          else {
+            console.log("done");
+
+            // create new cover letter
+            const now = moment().format("MMMM Do YYYY, HH:mm");
+            const newCoverLetter: CoverLetter = {
+              job_url: url,
+              cover_letter: value,
+              generated_at: now,
+            };
+
+            // add to existing ones in storage
+            setCoverLetters([...coverLetters, newCoverLetter]);
+            localStorage.setItem(
+              "coverLetters",
+              JSON.stringify([...coverLetters, newCoverLetter])
+            );
+
+            // fire storage event so hooks reload
+            window.dispatchEvent(new Event("storage"));
+          }
+        }
+      );
   };
 
   return (
@@ -100,6 +130,9 @@ function App() {
         >
           Generate Cover Letter
         </Button>
+      </Box>
+      <Box width="66%">
+        <CoverLettersList />
       </Box>
     </>
   );

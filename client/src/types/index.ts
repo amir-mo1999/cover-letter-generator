@@ -1,3 +1,4 @@
 import { Resume } from "./Resume";
+import { CoverLetter } from "./CoverLetter";
 
-export type { Resume };
+export type { Resume, CoverLetter };
