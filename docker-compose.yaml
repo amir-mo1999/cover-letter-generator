@@ -18,6 +18,8 @@ services:
       context: api/.
     env_file:
       - ./api/.env
+    environment:
+      - SELENIUM_URL=http://selenium:4444
     ports:
       - "4000:4000"
     networks:
