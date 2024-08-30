@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { CoverLetter } from "../types";
+import { getCoverLetters } from "../utils";
 
 const useCoverLetters = (): [
   CoverLetter[],
@@ -7,23 +8,20 @@ const useCoverLetters = (): [
 ] => {
   const [coverLetters, setCoverLetters] = useState<Array<CoverLetter>>([]);
 
-  // load cover letters from local storage
-  const loadCoverLetters = () => {
-    const aux = localStorage.getItem("coverLetters");
-    if (aux !== null) {
-      setCoverLetters(JSON.parse(aux));
-    }
+  // set cover letters from local storage
+  const setCoverLettersFromStorage = () => {
+    setCoverLetters(getCoverLetters());
   };
 
   // initial load
-  useEffect(loadCoverLetters, []);
+  useEffect(() => setCoverLetters(getCoverLetters()), []);
 
   // update cover letters state when storage changes
   useEffect(() => {
-    loadCoverLetters();
+    setCoverLettersFromStorage();
 
     const handleStorageChange = () => {
-      loadCoverLetters();
+      setCoverLettersFromStorage();
     };
 
     window.addEventListener("storage", handleStorageChange);

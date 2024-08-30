@@ -9,14 +9,14 @@ import Button from "@mui/material/Button";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ExpandIcon from "@mui/icons-material/Expand";
+import { removeCoverLetter } from "../utils";
 
 const CoverLettersList: React.FC = () => {
-  const [coverLetters, setCoverLetters] = useCoverLetters();
+  const [coverLetters] = useCoverLetters();
 
   const onDelete = (indx: number) => {
-    const f = (_: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-      const aux = coverLetters.filter((_, i) => i !== indx);
-      setCoverLetters([...aux]);
+    const f = () => {
+      removeCoverLetter(indx);
     };
     return f;
   };

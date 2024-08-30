@@ -10,7 +10,7 @@ import theme from "./theme";
 import { useState, useEffect } from "react";
 import { generateCoverLetter } from "./api";
 import moment from "moment";
-import { useCoverLetters } from "./hooks";
+import { pushCoverLetter } from "./utils";
 
 function isValidURL(url: string): boolean {
   try {
@@ -25,7 +25,6 @@ function App() {
   const resume = useResume();
   const [url, setUrl] = useState<string>("");
   const [disableGenerate, setDisableGenerate] = useState<boolean>();
-  const [coverLetters, setCoverLetters] = useCoverLetters();
 
   // disable generate button if resume or url is not set
   const checkDisableGenerate = () => {
@@ -59,15 +58,7 @@ function App() {
             generated_at: now,
           };
 
-          // add to existing ones in storage
-          setCoverLetters([...coverLetters, newCoverLetter]);
-          localStorage.setItem(
-            "coverLetters",
-            JSON.stringify([...coverLetters, newCoverLetter])
-          );
-
-          // fire storage event so hooks reload
-          window.dispatchEvent(new Event("storage"));
+          pushCoverLetter(newCoverLetter);
         }
       });
   };
