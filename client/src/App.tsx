@@ -146,7 +146,7 @@ function App() {
           Generate Cover Letter
           <CircularProgress
             sx={{ display: showSpinner ? "inline" : "none", marginLeft: 1 }}
-            size={30}
+            size={25}
           />
         </Button>
       </Box>

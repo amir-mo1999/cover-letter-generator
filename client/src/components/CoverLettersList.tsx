@@ -244,6 +244,11 @@ const CoverLettersList: React.FC = () => {
                 }}
               >
                 <Typography fontWeight="bold">{coverLetter.company}</Typography>
+                <Divider
+                  orientation="vertical"
+                  flexItem
+                  sx={{ bgcolor: theme.palette.secondary.main }}
+                />
                 <Typography fontWeight="bold">
                   {coverLetter.job_title}
                 </Typography>
@@ -262,7 +267,11 @@ const CoverLettersList: React.FC = () => {
                 {coverLetter.job_url}
               </Link>
             </Box>
-            <Divider></Divider>
+            <Divider
+              orientation="horizontal"
+              flexItem
+              sx={{ bgcolor: theme.palette.secondary.main }}
+            />
             <Typography
               maxHeight={indx === toExpandIndx ? undefined : 140}
               overflow="clip"
@@ -270,7 +279,11 @@ const CoverLettersList: React.FC = () => {
             >
               {coverLetter.cover_letter}
             </Typography>
-            <Divider></Divider>
+            <Divider
+              orientation="horizontal"
+              flexItem
+              sx={{ bgcolor: theme.palette.secondary.main }}
+            />
 
             <Box
               sx={{
