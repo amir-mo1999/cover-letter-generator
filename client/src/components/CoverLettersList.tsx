@@ -2,30 +2,43 @@ import Typography from "@mui/material/Typography";
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import Link from "@mui/material/Link";
-import Snackbar from "@mui/material/Snackbar";
+import Snackbar, { SnackbarCloseReason } from "@mui/material/Snackbar";
 import SnackbarContent from "@mui/material/SnackbarContent";
-
+import { CoverLetter } from "../types";
 import { useCoverLetters } from "../hooks";
-import React from "react";
+import React, { useEffect } from "react";
 import Divider from "@mui/material/Divider";
 import Button from "@mui/material/Button";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ExpandIcon from "@mui/icons-material/Expand";
-import { removeCoverLetter } from "../utils";
+import { pushCoverLetter, removeCoverLetter } from "../utils";
 import { useState } from "react";
+import { SettingsPowerRounded } from "@mui/icons-material";
 
 const CoverLettersList: React.FC = () => {
   const [coverLetters] = useCoverLetters();
   const [toExpandIndx, setToExpandIndx] = useState<number>();
-  const [snackbarOpen, setSnackbarOpen] = useState<boolean>(false);
-  const [snackbarText, setSnackbarText] = useState<string>("");
+  const [copySnackbarOpen, setCopySnackbarOpen] = useState<boolean>(false);
+  const [deleteSnackbarOpen, setDeleteSnackbarOpen] = useState<boolean>(false);
+  const [copySnackbarText, setCopySnackbarText] = useState<string>("");
+  const [deletedCoverLetter, setDeletedCoverLetter] = useState<CoverLetter>();
 
   const onDelete = (indx: number) => {
     const f = () => {
+      setDeleteSnackbarOpen(true);
+      setDeletedCoverLetter(coverLetters[indx]);
       removeCoverLetter(indx);
     };
     return f;
+  };
+
+  const onUndoDelete = () => {
+    if (deletedCoverLetter) {
+      pushCoverLetter(deletedCoverLetter);
+      setDeletedCoverLetter(undefined);
+      setDeleteSnackbarOpen(false);
+    }
   };
 
   const onClickExpand = (indx: number) => {
@@ -37,15 +50,14 @@ const CoverLettersList: React.FC = () => {
   };
 
   const onClickCopy = (indx: number) => {
-    console.log(snackbarOpen, snackbarText);
     const fallbackCopyTextError = () => {
-      setSnackbarOpen(true);
-      setSnackbarText("Could not Copy Cover Letter to Clipboard");
+      setCopySnackbarOpen(true);
+      setCopySnackbarText("Could not Copy Cover Letter to Clipboard");
     };
 
     const fallbackCopyTextSuccess = () => {
-      setSnackbarOpen(true);
-      setSnackbarText("Copied");
+      setCopySnackbarOpen(true);
+      setCopySnackbarText("Copied");
     };
 
     const f = () => {
@@ -64,6 +76,30 @@ const CoverLettersList: React.FC = () => {
     };
     return f;
   };
+
+  const handleCloseCopySnackbar = (
+    _: React.SyntheticEvent | Event,
+    reason?: SnackbarCloseReason
+  ) => {
+    if (reason === "clickaway") return;
+
+    setCopySnackbarOpen(false);
+  };
+
+  const handleCloseDeleteSnackbar = (
+    _: React.SyntheticEvent | Event,
+    reason?: SnackbarCloseReason
+  ) => {
+    if (reason === "clickaway") return;
+
+    setDeleteSnackbarOpen(false);
+  };
+
+  const deleteSnackbarAction = (
+    <Button color="secondary" size="small" onClick={onUndoDelete}>
+      UNDO
+    </Button>
+  );
 
   return (
     <Box
@@ -137,13 +173,28 @@ const CoverLettersList: React.FC = () => {
         </Paper>
       ))}
       <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={100000}
-        onClose={() => setSnackbarOpen(false)}
+        open={copySnackbarOpen}
+        autoHideDuration={1000}
+        onClose={handleCloseCopySnackbar}
         anchorOrigin={{ horizontal: "center", vertical: "bottom" }}
       >
         <SnackbarContent
-          message={snackbarText}
+          message={copySnackbarText}
+          sx={{
+            textAlign: "center",
+            justifyContent: "center",
+          }}
+        />
+      </Snackbar>
+      <Snackbar
+        open={deleteSnackbarOpen}
+        autoHideDuration={5000}
+        onClose={handleCloseDeleteSnackbar}
+        anchorOrigin={{ horizontal: "center", vertical: "bottom" }}
+      >
+        <SnackbarContent
+          message="Deleted Cover Letter"
+          action={deleteSnackbarAction}
           sx={{
             textAlign: "center",
             justifyContent: "center",
