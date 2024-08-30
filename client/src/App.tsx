@@ -46,7 +46,7 @@ function App() {
       generateCoverLetter({ url: url, resume: resume.content }).then((res) => {
         if (res === null) console.log("There was an error");
         else {
-          console.log("done");
+          console.log(res);
 
           // create new cover letter
           const now = moment().format("MMMM Do YYYY, HH:mm");

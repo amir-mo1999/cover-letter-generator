@@ -2,6 +2,9 @@ import Typography from "@mui/material/Typography";
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import Link from "@mui/material/Link";
+import Snackbar from "@mui/material/Snackbar";
+import SnackbarContent from "@mui/material/SnackbarContent";
+
 import { useCoverLetters } from "../hooks";
 import React from "react";
 import Divider from "@mui/material/Divider";
@@ -10,13 +13,54 @@ import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ExpandIcon from "@mui/icons-material/Expand";
 import { removeCoverLetter } from "../utils";
+import { useState } from "react";
 
 const CoverLettersList: React.FC = () => {
   const [coverLetters] = useCoverLetters();
+  const [toExpandIndx, setToExpandIndx] = useState<number>();
+  const [snackbarOpen, setSnackbarOpen] = useState<boolean>(false);
+  const [snackbarText, setSnackbarText] = useState<string>("");
 
   const onDelete = (indx: number) => {
     const f = () => {
       removeCoverLetter(indx);
+    };
+    return f;
+  };
+
+  const onClickExpand = (indx: number) => {
+    const f = () => {
+      if (indx === toExpandIndx) setToExpandIndx(undefined);
+      else setToExpandIndx(indx);
+    };
+    return f;
+  };
+
+  const onClickCopy = (indx: number) => {
+    console.log(snackbarOpen, snackbarText);
+    const fallbackCopyTextError = () => {
+      setSnackbarOpen(true);
+      setSnackbarText("Could not Copy Cover Letter to Clipboard");
+    };
+
+    const fallbackCopyTextSuccess = () => {
+      setSnackbarOpen(true);
+      setSnackbarText("Copied");
+    };
+
+    const f = () => {
+      if (!navigator.clipboard || !navigator.clipboard.writeText)
+        fallbackCopyTextError();
+      else {
+        navigator.clipboard
+          .writeText(coverLetters[indx].cover_letter)
+          .then(() => {
+            fallbackCopyTextSuccess();
+          })
+          .catch(() => {
+            fallbackCopyTextError();
+          });
+      }
     };
     return f;
   };
@@ -42,7 +86,6 @@ const CoverLettersList: React.FC = () => {
         >
           <Box paddingBottom={1}>
             <Box
-              paddingBottom={0.5}
               sx={{
                 display: "flex",
                 flexDirection: "row",
@@ -64,14 +107,27 @@ const CoverLettersList: React.FC = () => {
             </Link>
           </Box>
           <Divider></Divider>
-          <Typography maxHeight={100} overflow="clip" paddingTop="5px">
+          <Typography
+            maxHeight={indx === toExpandIndx ? undefined : 140}
+            overflow="clip"
+            sx={{ whiteSpace: "pre-line", paddingY: 1 }}
+          >
             {coverLetter.cover_letter}
           </Typography>
-          <Box sx={{ display: "flex", flexDirection: "row", gap: 2 }}>
-            <Button variant="contained">
+          <Divider></Divider>
+
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              gap: 2,
+              paddingTop: 1,
+            }}
+          >
+            <Button onClick={onClickExpand(indx)} variant="contained">
               <ExpandIcon />
             </Button>
-            <Button variant="contained">
+            <Button onClick={onClickCopy(indx)} variant="contained">
               <ContentCopyIcon />
             </Button>
             <Button onClick={onDelete(indx)} variant="contained">
@@ -80,6 +136,20 @@ const CoverLettersList: React.FC = () => {
           </Box>
         </Paper>
       ))}
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={100000}
+        onClose={() => setSnackbarOpen(false)}
+        anchorOrigin={{ horizontal: "center", vertical: "bottom" }}
+      >
+        <SnackbarContent
+          message={snackbarText}
+          sx={{
+            textAlign: "center",
+            justifyContent: "center",
+          }}
+        />
+      </Snackbar>
     </Box>
   );
 };
