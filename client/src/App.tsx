@@ -44,32 +44,32 @@ function App() {
   // generates new cover letter and pushes it to local storage
   const onClickCreate = () => {
     if (resume !== undefined)
-      generateCoverLetter({ url: url, resume: resume.content }).then(
-        (value) => {
-          if (value === "error") console.log("There was an error");
-          else {
-            console.log("done");
+      generateCoverLetter({ url: url, resume: resume.content }).then((res) => {
+        if (res === null) console.log("There was an error");
+        else {
+          console.log("done");
 
-            // create new cover letter
-            const now = moment().format("MMMM Do YYYY, HH:mm");
-            const newCoverLetter: CoverLetter = {
-              job_url: url,
-              cover_letter: value,
-              generated_at: now,
-            };
+          // create new cover letter
+          const now = moment().format("MMMM Do YYYY, HH:mm");
+          const newCoverLetter: CoverLetter = {
+            job_url: url,
+            cover_letter: res.cover_letter,
+            job_title: res.job_title,
+            company: res.company,
+            generated_at: now,
+          };
 
-            // add to existing ones in storage
-            setCoverLetters([...coverLetters, newCoverLetter]);
-            localStorage.setItem(
-              "coverLetters",
-              JSON.stringify([...coverLetters, newCoverLetter])
-            );
+          // add to existing ones in storage
+          setCoverLetters([...coverLetters, newCoverLetter]);
+          localStorage.setItem(
+            "coverLetters",
+            JSON.stringify([...coverLetters, newCoverLetter])
+          );
 
-            // fire storage event so hooks reload
-            window.dispatchEvent(new Event("storage"));
-          }
+          // fire storage event so hooks reload
+          window.dispatchEvent(new Event("storage"));
         }
-      );
+      });
   };
 
   return (
