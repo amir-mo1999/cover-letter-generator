@@ -34,7 +34,7 @@ class Scraper:
             WebDriver: Webdriver instance
         """
         # set up selenium Webdriver
-        selenium_url = os.environ.get("SELENIUM_URL")
+        selenium_url = os.environ.get("http://localhost:4444")
         options = webdriver.ChromeOptions()
         options.add_argument("--ignore-ssl-errors=yes")
         options.add_argument("--ignore-certificate-errors")

@@ -4,14 +4,16 @@ services:
       context: client/.
     ports:
       - "80:80"
+    networks:
+      - app-network
+    depends_on:
+      - api
     restart: always
 
   api:
     container_name: api
-    hostname: api
-    shm_size: 1gb
     volumes:
-      - ./api/App:/www/App
+      - ./api/App:/app/App
     build:
       context: api/.
     env_file:
