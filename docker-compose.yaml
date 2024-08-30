@@ -13,7 +13,7 @@ services:
   api:
     container_name: api
     volumes:
-      - ./api/App:/app/App
+      - ./api/App:/app/App:rw
     build:
       context: api/.
     env_file:
