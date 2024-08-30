@@ -6,7 +6,7 @@ import Snackbar, { SnackbarCloseReason } from "@mui/material/Snackbar";
 import SnackbarContent from "@mui/material/SnackbarContent";
 import { CoverLetter } from "../types";
 import { useCoverLetters } from "../hooks";
-import React, { useEffect } from "react";
+import React from "react";
 import Divider from "@mui/material/Divider";
 import Button from "@mui/material/Button";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
@@ -14,7 +14,6 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import ExpandIcon from "@mui/icons-material/Expand";
 import { pushCoverLetter, removeCoverLetter } from "../utils";
 import { useState } from "react";
-import { SettingsPowerRounded } from "@mui/icons-material";
 
 const CoverLettersList: React.FC = () => {
   const [coverLetters] = useCoverLetters();
