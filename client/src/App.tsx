@@ -11,6 +11,8 @@ import { generateCoverLetter } from "./api";
 import moment from "moment";
 import { pushCoverLetter } from "./utils";
 import theme from "./theme";
+import Snackbar, { SnackbarCloseReason } from "@mui/material/Snackbar";
+import SnackbarContent from "@mui/material/SnackbarContent";
 
 function isValidURL(url: string): boolean {
   try {
@@ -25,6 +27,17 @@ function App() {
   const resume = useResume();
   const [url, setUrl] = useState<string>("");
   const [disableGenerate, setDisableGenerate] = useState<boolean>();
+  const [openSnackbar, setOpenSnackbar] = useState<boolean>(false);
+  const [snackbarText, setSnackbarText] = useState<string>("");
+
+  const handleCloseSnackBar = (
+    _: React.SyntheticEvent | Event,
+    reason?: SnackbarCloseReason
+  ) => {
+    if (reason === "clickaway") return;
+
+    setOpenSnackbar(false);
+  };
 
   // disable generate button if resume or url is not set
   const checkDisableGenerate = () => {
@@ -44,8 +57,10 @@ function App() {
   const onClickCreate = () => {
     if (resume !== undefined)
       generateCoverLetter({ url: url, resume: resume.content }).then((res) => {
-        if (res === null) console.log("There was an error");
-        else {
+        if (res === null) {
+          setOpenSnackbar(true);
+          setSnackbarText("Error Generating Cover Letter");
+        } else {
           // create new cover letter
           const now = moment().format("MMMM Do YYYY, HH:mm");
           const newCoverLetter: CoverLetter = {
@@ -57,6 +72,9 @@ function App() {
           };
 
           pushCoverLetter(newCoverLetter);
+
+          setOpenSnackbar(true);
+          setSnackbarText("Generated Cover Letter");
         }
       });
   };
@@ -126,6 +144,20 @@ function App() {
       >
         <CoverLettersList />
       </Box>
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={2000}
+        onClose={handleCloseSnackBar}
+        anchorOrigin={{ horizontal: "center", vertical: "bottom" }}
+      >
+        <SnackbarContent
+          message={snackbarText}
+          sx={{
+            textAlign: "center",
+            justifyContent: "center",
+          }}
+        />
+      </Snackbar>
     </>
   );
 }

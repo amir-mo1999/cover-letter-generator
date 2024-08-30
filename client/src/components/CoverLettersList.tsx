@@ -108,7 +108,7 @@ const CoverLettersList: React.FC = () => {
 
     const fallbackCopyTextSuccess = () => {
       setCopySnackbarOpen(true);
-      setCopySnackbarText("Copied");
+      setCopySnackbarText("Cover Letter Copied");
     };
 
     const f = () => {
@@ -295,7 +295,7 @@ const CoverLettersList: React.FC = () => {
       </Box>
       <Snackbar
         open={copySnackbarOpen}
-        autoHideDuration={1000}
+        autoHideDuration={2000}
         onClose={handleCloseCopySnackbar}
         anchorOrigin={{ horizontal: "center", vertical: "bottom" }}
       >
