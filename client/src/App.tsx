@@ -6,11 +6,11 @@ import TextField from "@mui/material/TextField";
 import { ResumeUpload, CoverLettersList } from "./components";
 import { useResume } from "./hooks";
 import { CoverLetter } from "./types";
-import theme from "./theme";
 import { useState, useEffect } from "react";
 import { generateCoverLetter } from "./api";
 import moment from "moment";
 import { pushCoverLetter } from "./utils";
+import theme from "./theme";
 
 function isValidURL(url: string): boolean {
   try {
@@ -68,7 +68,7 @@ function App() {
           display: "flex",
           flexDirection: "column",
           width: "33%",
-          backgroundColor: "#503C80",
+          backgroundColor: theme.palette.primary.main,
           justifyContent: "center",
           alignItems: "center",
           gap: "5px",
@@ -120,7 +120,10 @@ function App() {
           Generate Cover Letter
         </Button>
       </Box>
-      <Box width="66%">
+      <Box
+        width="66%"
+        sx={{ backgroundColor: theme.palette.background.default }}
+      >
         <CoverLettersList />
       </Box>
     </>

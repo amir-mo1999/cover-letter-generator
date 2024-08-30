@@ -17,9 +17,10 @@ import React, { useState, useEffect } from "react";
 import { TextField } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import InputAdornment from "@mui/material/InputAdornment";
+import theme from "../theme";
 
 const CoverLettersList: React.FC = () => {
-  const [coverLetters, setCoverLetters] = useCoverLetters();
+  const [coverLetters] = useCoverLetters();
   const [toExpandIndx, setToExpandIndx] = useState<number>();
   const [copySnackbarOpen, setCopySnackbarOpen] = useState<boolean>(false);
   const [deleteSnackbarOpen, setDeleteSnackbarOpen] = useState<boolean>(false);
@@ -60,7 +61,13 @@ const CoverLettersList: React.FC = () => {
     setCompanies(Array.from(new Set(aux)));
   };
   useEffect(updateCompanies, [coverLetters]);
-  //useEffect(updateCompanies, []);
+
+  const onChangeSelectedCompanies = (
+    _: React.SyntheticEvent<Element, Event>,
+    newValue: string[]
+  ) => {
+    setSelectedCompanies(newValue);
+  };
 
   const onChangeSearchJobTitle = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -171,6 +178,7 @@ const CoverLettersList: React.FC = () => {
             width: 500,
             "& .MuiOutlinedInput-root": {
               borderRadius: "160px", // Adjust this value for more or less roundness
+              backgroundColor: theme.palette.background.paper,
             },
           }}
           slotProps={{
@@ -184,19 +192,25 @@ const CoverLettersList: React.FC = () => {
           }}
         ></TextField>
         <Autocomplete
+          onChange={onChangeSelectedCompanies}
           multiple
+          limitTags={1}
           options={companies}
           disablePortal
-          sx={{ width: 300 }}
           renderInput={(params) => (
             <TextField
+              {...params}
               sx={{
-                width: 300,
+                position: "absolute",
+                width: 400,
                 "& .MuiOutlinedInput-root": {
-                  borderRadius: "160px",
+                  borderRadius: "160px", // Adjust this value for more or less roundness
+                  backgroundColor: theme.palette.background.paper,
+                },
+                "& .MuiFilledInput-root": {
+                  borderRadius: "160px", // Adjust this value for more or less roundness
                 },
               }}
-              {...params}
               placeholder="Company"
             />
           )}
