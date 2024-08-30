@@ -196,6 +196,11 @@ const CoverLettersList: React.FC = () => {
           limitTags={3}
           options={companies}
           disablePortal
+          sx={{
+            "& .MuiAutocomplete-popupIndicator": {
+              color: theme.palette.primary.main,
+            },
+          }}
           renderInput={(params) => (
             <TextField
               {...params}
@@ -273,7 +278,7 @@ const CoverLettersList: React.FC = () => {
               sx={{ bgcolor: theme.palette.secondary.main }}
             />
             <Typography
-              maxHeight={indx === toExpandIndx ? undefined : 140}
+              maxHeight={indx === toExpandIndx ? undefined : 237}
               overflow="clip"
               sx={{ whiteSpace: "pre-line", paddingY: 1 }}
             >

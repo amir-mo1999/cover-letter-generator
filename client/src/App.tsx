@@ -101,7 +101,6 @@ function App() {
         }}
         color="text.secondary"
       >
-        <ResumeUpload sx={{ width: "50%" }}></ResumeUpload>
         {resume ? (
           <>
             <Typography>{resume ? resume.name : ""}</Typography>
@@ -112,6 +111,7 @@ function App() {
         ) : (
           <></>
         )}
+        <ResumeUpload sx={{ width: "50%" }}></ResumeUpload>
         <Typography>Provide a URL to a job listing</Typography>
         <TextField
           value={url}
