@@ -2,6 +2,6 @@ venv
 node_modules
 api/.env
 __pycache__
-
+dist
 # Created by https://www.toptal.com/developers/gitignore/api/venv
 # Edit at https://www.toptal.com/developers/gitignore?templates=venv
