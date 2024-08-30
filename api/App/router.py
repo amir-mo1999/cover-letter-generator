@@ -5,6 +5,7 @@ from .utils import (
     extract_text_from_pdf_base64,
     scrape_job_listing,
     generate_cover_letter,
+    is_base64,
 )
 from pydantic import BaseModel
 
@@ -33,7 +34,12 @@ class GenerateCoverLetterRouteInput(BaseModel):
 
 
 @router.post("/generate-cover-letter")
-async def generate_cover_letter_route(input: GenerateCoverLetterRouteInput):
-    job_listing = scrape_job_listing(input.url)
-    cover_letter = await generate_cover_letter(job_listing, input.resume)
+async def generate_cover_letter_route(req: GenerateCoverLetterRouteInput):
+    job_listing = scrape_job_listing(req.url)
+
+    # extract text from resume if it comes as a base64 string
+    if is_base64(req.resume):
+        req.resume = extract_text_from_pdf_base64(req.resume)
+
+    cover_letter = await generate_cover_letter(job_listing, req.resume)
     return cover_letter

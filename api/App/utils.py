@@ -83,6 +83,18 @@ async def generate_cover_letter(job_listing: str, resume: str) -> str:
     return cover_letter
 
 
+def is_base64(string):
+    try:
+        decoded = base64.b64decode(string, validate=True)
+
+        if base64.b64encode(decoded).decode("utf-8") == string:
+            return True
+        else:
+            return False
+    except Exception:
+        return False
+
+
 def scrape_job_listing(url):
     scraper = Scraper(disable_javascript=True)
     pdf = scraper.print_to_pdf(url)
