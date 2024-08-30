@@ -8,6 +8,7 @@ from .utils import (
     is_base64,
 )
 from pydantic import BaseModel
+from .models import CoverLetter
 
 router = APIRouter()
 
@@ -33,7 +34,7 @@ class GenerateCoverLetterRouteInput(BaseModel):
     resume: str
 
 
-@router.post("/generate-cover-letter")
+@router.post("/generate-cover-letter", response_model=CoverLetter)
 async def generate_cover_letter_route(req: GenerateCoverLetterRouteInput):
     job_listing = scrape_job_listing(req.url)
 

@@ -4,6 +4,7 @@ from io import BytesIO
 from openai import AsyncOpenAI
 import os
 from .scraper import Scraper
+from .models import CoverLetter
 
 
 def extract_text_from_pdf_base64(base64_string: str) -> str:
@@ -35,7 +36,7 @@ def extract_text_from_pdf_base64(base64_string: str) -> str:
     return extracted_text
 
 
-async def generate_cover_letter(job_listing: str, resume: str) -> str:
+async def generate_cover_letter(job_listing: str, resume: str) -> CoverLetter:
     """Generates a cover letter based on a given job listing and resume.
 
     Args:
@@ -66,6 +67,11 @@ async def generate_cover_letter(job_listing: str, resume: str) -> str:
     )
     job_listing = response.choices[0].message.content
 
+    # extract company name, job title and pure job listing
+    job_listing = job_listing.split("\n")
+    company, job_title = job_listing[:2]
+    job_listing = "\n".join(job_listing[2:])
+
     ## generate the cover letter
     response = await client.chat.completions.create(
         model="gpt-4",
@@ -80,6 +86,9 @@ async def generate_cover_letter(job_listing: str, resume: str) -> str:
     )
     cover_letter = response.choices[0].message.content
 
+    cover_letter = CoverLetter(
+        cover_letter=cover_letter, company=company, job_title=job_title
+    )
     return cover_letter
 
 
