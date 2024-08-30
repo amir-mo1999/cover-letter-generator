@@ -157,7 +157,6 @@ const CoverLettersList: React.FC = () => {
       sx={{
         display: "flex",
         flexDirection: "column",
-        overflow: "auto",
         height: "100%",
       }}
     >
@@ -175,7 +174,7 @@ const CoverLettersList: React.FC = () => {
           onChange={onChangeSearchJobTitle}
           placeholder="Job Title"
           sx={{
-            width: 500,
+            width: 400,
             "& .MuiOutlinedInput-root": {
               borderRadius: "160px", // Adjust this value for more or less roundness
               backgroundColor: theme.palette.background.paper,
@@ -194,15 +193,15 @@ const CoverLettersList: React.FC = () => {
         <Autocomplete
           onChange={onChangeSelectedCompanies}
           multiple
-          limitTags={1}
+          limitTags={3}
           options={companies}
           disablePortal
           renderInput={(params) => (
             <TextField
               {...params}
               sx={{
-                position: "absolute",
-                width: 400,
+                width: "full",
+                minWidth: 400,
                 "& .MuiOutlinedInput-root": {
                   borderRadius: "160px", // Adjust this value for more or less roundness
                   backgroundColor: theme.palette.background.paper,
@@ -216,69 +215,84 @@ const CoverLettersList: React.FC = () => {
           )}
         />
       </Box>
-      {coverLetters.map((coverLetter, indx) => (
-        <Paper
-          key={indx}
-          elevation={8}
-          sx={{
-            display: hiddenIndices.includes(indx) ? "none" : undefined,
-            padding: "10px",
-            margin: "10px",
-            overflow: "clip",
-          }}
-        >
-          <Box paddingBottom={1}>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          overflow: "auto",
+          height: "100%",
+        }}
+      >
+        {coverLetters.map((coverLetter, indx) => (
+          <Paper
+            key={indx}
+            elevation={5}
+            sx={{
+              display: hiddenIndices.includes(indx) ? "none" : undefined,
+              padding: "10px",
+              margin: "10px",
+              overflow: "clip",
+            }}
+          >
+            <Box paddingBottom={1}>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  gap: "10px",
+                }}
+              >
+                <Typography fontWeight="bold">{coverLetter.company}</Typography>
+                <Typography fontWeight="bold">
+                  {coverLetter.job_title}
+                </Typography>
+                <Typography
+                  sx={{ fontWeight: "light", fontSize: 14, flex: 1 }}
+                  align="right"
+                >
+                  {coverLetter.generated_at}
+                </Typography>
+              </Box>
+              <Link
+                href={coverLetter.job_url}
+                underline="hover"
+                target="_blank"
+              >
+                {coverLetter.job_url}
+              </Link>
+            </Box>
+            <Divider></Divider>
+            <Typography
+              maxHeight={indx === toExpandIndx ? undefined : 140}
+              overflow="clip"
+              sx={{ whiteSpace: "pre-line", paddingY: 1 }}
+            >
+              {coverLetter.cover_letter}
+            </Typography>
+            <Divider></Divider>
+
             <Box
               sx={{
                 display: "flex",
                 flexDirection: "row",
-                justifyContent: "space-between",
-                gap: "10px",
+                gap: 2,
+                paddingTop: 1,
               }}
             >
-              <Typography fontWeight="bold">{coverLetter.company}</Typography>
-              <Typography fontWeight="bold">{coverLetter.job_title}</Typography>
-              <Typography
-                sx={{ fontWeight: "light", fontSize: 14, flex: 1 }}
-                align="right"
-              >
-                {coverLetter.generated_at}
-              </Typography>
+              <Button onClick={onClickExpand(indx)} variant="contained">
+                <ExpandIcon />
+              </Button>
+              <Button onClick={onClickCopy(indx)} variant="contained">
+                <ContentCopyIcon />
+              </Button>
+              <Button onClick={onDelete(indx)} variant="contained">
+                <DeleteIcon />
+              </Button>
             </Box>
-            <Link href={coverLetter.job_url} underline="hover" target="_blank">
-              {coverLetter.job_url}
-            </Link>
-          </Box>
-          <Divider></Divider>
-          <Typography
-            maxHeight={indx === toExpandIndx ? undefined : 140}
-            overflow="clip"
-            sx={{ whiteSpace: "pre-line", paddingY: 1 }}
-          >
-            {coverLetter.cover_letter}
-          </Typography>
-          <Divider></Divider>
-
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              gap: 2,
-              paddingTop: 1,
-            }}
-          >
-            <Button onClick={onClickExpand(indx)} variant="contained">
-              <ExpandIcon />
-            </Button>
-            <Button onClick={onClickCopy(indx)} variant="contained">
-              <ContentCopyIcon />
-            </Button>
-            <Button onClick={onDelete(indx)} variant="contained">
-              <DeleteIcon />
-            </Button>
-          </Box>
-        </Paper>
-      ))}
+          </Paper>
+        ))}
+      </Box>
       <Snackbar
         open={copySnackbarOpen}
         autoHideDuration={1000}
